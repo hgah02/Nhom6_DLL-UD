@@ -1,17 +1,25 @@
 import streamlit as st
 from bases.page import Page
+from repositories.user import user_repository
+from bcrypt import checkpw
 
 class LoginPage(Page):
     def login(self, username, password):
         if (username == "") or (password == ""):
             st.error("Vui lòng điền đầy đủ thông tin.")
             return
-        # TODO: Check if username exists in the database
-        # TODO: Check if password is correct
-        # TODO: Set the session state to logged in
+
+        user = user_repository.find_by_username(username)
+        if not user or checkpw(password.encode(), user["password"]):
+            st.error("Sai tên người dùng hoặc mật khẩu.")
+            return
+
+        st.session_state["logged_in"] = True
+        st.session_state["username"] = username
+
+        st.switch_page("app.py")
 
     def view(self):
-        st.set_page_config(layout="centered", initial_sidebar_state="collapsed")
         st.title("Đăng nhập")
         username = st.text_input("Tên người dùng")
         password = st.text_input("Mật khẩu", type="password")

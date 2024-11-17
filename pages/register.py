@@ -23,7 +23,6 @@ class RegisterPage(Page):
         st.success("Đăng ký thành công.")
 
     def view(self):
-        st.set_page_config(layout="centered", initial_sidebar_state="collapsed")
         st.title("Tạo tài khoản mới")
         username = st.text_input("Tên người dùng")
         password = st.text_input("Mật khẩu", type="password")
