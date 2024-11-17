@@ -1,16 +1,26 @@
 import streamlit as st
 from bases.page import Page
+from repositories.user import user_repository
+from bcrypt import hashpw, gensalt
 
-class Register(Page):
+class RegisterPage(Page):
     def register(self, username, password, password_confirmation):
         if (username == "") or (password == "") or (password_confirmation == ""):
             st.error("Vui lòng điền đầy đủ thông tin.")
-            return False
+            return
         if password != password_confirmation:
             st.error("Mật khẩu không khớp.")
-            return False
-        # TODO: Check if username already exists in the database
-        # TODO: Add the new user to the database
+            return
+
+        existing_user = user_repository.find_by_username(username)
+        if existing_user:
+            st.error("Tên người dùng đã tồn tại.")
+            return
+
+        hashed_password = hashpw(password.encode(), salt=gensalt())
+        user_repository.create_user(username, hashed_password)
+
+        st.success("Đăng ký thành công.")
 
     def view(self):
         st.set_page_config(layout="centered", initial_sidebar_state="collapsed")
@@ -24,5 +34,5 @@ class Register(Page):
             self.register(username, password, password_confirmation)
         right.page_link("pages/login.py", label="Đã có tải khoản?")
 
-page = Register()
+page = RegisterPage()
 page.init()

@@ -1,7 +1,7 @@
 import streamlit as st
 from bases.page import Page
 
-class Home(Page):
+class HomePage(Page):
     def view(self):
         st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 

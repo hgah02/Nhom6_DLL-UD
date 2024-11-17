@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+  app-mongo-db:
+    container_name: app-mongo-db
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: vukm
+      MONGO_INITDB_ROOT_PASSWORD: rootroot
+      MONGO_INITDB_DATABASE: db-collection
+    ports:
+      - 27018:27017
+    networks:
+      - app-mongo-network
+
+  app-mongo-express:
+    container_name: app-mongo-express
+    image: mongo-express:latest
+    restart: unless-stopped
+    ports:
+      - 8089:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: app-mongo-db
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_MONGODB_AUTH_USERNAME: vukm
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: rootroot
+      ME_CONFIG_BASICAUTH_USERNAME: vukm
+      ME_CONFIG_BASICAUTH_PASSWORD: rootroot
+    volumes:
+      - ./docker/mongodb/backup:/data/db
+    networks:
+      - app-mongo-network
+    depends_on:
+      - app-mongo-db
+networks:
+  app-mongo-network:
+    driver: bridge

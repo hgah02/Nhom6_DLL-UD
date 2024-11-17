@@ -1,4 +1,4 @@
-from pages.home import Home
+from pages.home import HomePage
 
-page = Home()
+page = HomePage()
 page.init()

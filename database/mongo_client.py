@@ -3,6 +3,6 @@ import pymongo
 
 @st.cache_resource
 def init_connection():
-    return pymongo.MongoClient(**st.secrets["mongo"])
+    return pymongo.MongoClient(**st.secrets["mongo_connection"])
 
 client = init_connection()

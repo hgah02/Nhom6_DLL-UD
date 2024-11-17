@@ -1,11 +1,11 @@
 import streamlit as st
 from bases.page import Page
 
-class Register(Page):
+class LoginPage(Page):
     def login(self, username, password):
         if (username == "") or (password == ""):
             st.error("Vui lòng điền đầy đủ thông tin.")
-            return False
+            return
         # TODO: Check if username exists in the database
         # TODO: Check if password is correct
         # TODO: Set the session state to logged in
@@ -21,5 +21,5 @@ class Register(Page):
             self.login(username, password)
         right.page_link("pages/register.py", label="Chưa có tải khoản?")
 
-page = Register()
+page = LoginPage()
 page.init()
