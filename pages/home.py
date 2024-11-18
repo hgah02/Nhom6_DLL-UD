@@ -3,12 +3,11 @@ from bases.page import Page
 
 class HomePage(Page):
     def view(self):
-        if (self.cookie.get("is_authenticated")):
-            st.title(f"Chào mừng {self.cookie.get('auth_info')}!")
+        if (self.is_authenticated()):
+            st.title(f"Chào mừng {self.get_auth_username()}!")
             st.write("Bạn đã đăng nhập thành công.")
             if st.button("Đăng xuất"):
-                self.cookie.remove("is_authenticated")
-                self.cookie.remove("auth_info")
+                self.remove_authentication_info()
                 st.rerun()
         else:
             st.title("Trang chủ")
