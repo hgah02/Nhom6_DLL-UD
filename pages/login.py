@@ -17,6 +17,7 @@ class LoginPage(Page):
         self.set_authentication_info(username)
 
         st.switch_page("app.py")
+        st.rerun()
 
     def view(self):
         st.title("Đăng nhập")

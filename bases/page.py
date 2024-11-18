@@ -1,27 +1,26 @@
 from abc import abstractmethod, ABC
 import streamlit as st
-from streamlit_cookies_controller import CookieController
+from streamlit_cookies_manager import EncryptedCookieManager
 
 class Page(ABC):
     def __init__(self):
-        self.cookie = CookieController()
+        self.cookie = EncryptedCookieManager(prefix="myapp", password="your_secure_password")
+        if not self.cookie.ready():
+            st.stop()
 
     @abstractmethod
     def view(self):
         pass
 
     def set_authentication_info(self, username):
-        self.cookie.set("is_authenticated", True)
-        self.cookie.set("auth_info", username)
+        self.cookie["auth_info"] = username
+        self.cookie.save()
 
     def remove_authentication_info(self):
-        self.cookie.remove("is_authenticated")
-        self.cookie.remove("auth_info")
+        self.cookie["auth_info"] = ''
+        self.cookie.save()
 
-    def is_authenticated(self):
-        return self.cookie.get("is_authenticated")
-
-    def get_auth_username(self):
+    def get_auth(self):
         return self.cookie.get('auth_info')
 
     def init(self):

@@ -3,8 +3,8 @@ from bases.page import Page
 
 class HomePage(Page):
     def view(self):
-        if (self.is_authenticated()):
-            st.title(f"Chào mừng {self.get_auth_username()}!")
+        if (self.get_auth()):
+            st.title(f"Chào mừng {self.get_auth()}!")
             st.write("Bạn đã đăng nhập thành công.")
             if st.button("Đăng xuất"):
                 self.remove_authentication_info()

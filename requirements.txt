@@ -1,4 +1,4 @@
 streamlit==1.40.1
 pymongo==4.10.1
 bcrypt==4.2.0
-streamlit-cookies-controller==0.0.4
+streamlit_cookies_manager==0.2.0
