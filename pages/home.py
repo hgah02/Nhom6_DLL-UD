@@ -3,16 +3,14 @@ from bases.page import Page
 
 class HomePage(Page):
     def view(self):
-        if 'logged_in' not in st.session_state:
-            st.session_state['logged_in'] = False
-
-        if (st.session_state["logged_in"]):
-            st.title(f"Chào mừng {st.session_state['username']}!")
+        if (self.cookie.get("is_authenticated")):
+            st.title(f"Chào mừng {self.cookie.get('auth_info')}!")
             st.write("Bạn đã đăng nhập thành công.")
-            st.button("Đăng xuất", on_click=lambda: st.session_state.clear())
+            if st.button("Đăng xuất"):
+                self.cookie.remove("is_authenticated")
+                self.cookie.remove("auth_info")
+                st.rerun()
         else:
-            st.session_state["logged_in"] = False
-
             st.title("Trang chủ")
             if st.button("Đăng ký"):
                 st.switch_page("pages/register.py")

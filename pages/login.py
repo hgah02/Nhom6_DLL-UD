@@ -14,8 +14,8 @@ class LoginPage(Page):
             st.error("Sai tên người dùng hoặc mật khẩu.")
             return
 
-        st.session_state["logged_in"] = True
-        st.session_state["username"] = username
+        self.cookie.set("is_authenticated", True)
+        self.cookie.set("auth_info", username)
 
         st.switch_page("app.py")
 
