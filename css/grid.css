@@ -1,0 +1,42 @@
+.mansory {
+  margin-top: 10px;
+  column-count: 2;
+  column-gap: 20px;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 5px;
+  display: block;
+  cursor: pointer;
+}
+
+@media (min-width: 576px) {
+  .mansory {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 768px) {
+  .mansory {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 992px) {
+  .mansory {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1200px) {
+  .mansory {
+    column-count: 4;
+  }
+}
+
+@media (min-width: 1536) {
+  .mansory {
+    column-count: 5;
+  }
+}

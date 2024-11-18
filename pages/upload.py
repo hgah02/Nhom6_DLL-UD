@@ -3,11 +3,12 @@ from bases.page import Page
 import os
 from streamlit_tags import st_tags
 import uuid
-from repositories.post import post_repository, user_repository
+from repositories.post import post_repository
+from repositories.user import user_repository
 
 class UploadPage(Page):
     def store_image(self, image):
-        UPLOAD_FOLDER = 'uploaded_images'
+        UPLOAD_FOLDER = 'static/uploaded_images'
         if not os.path.exists(UPLOAD_FOLDER):
             os.makedirs(UPLOAD_FOLDER)
 

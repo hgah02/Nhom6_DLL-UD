@@ -14,4 +14,7 @@ class PostRepository(Repository):
             "user_id": user_id
         })
 
+    def find_all(self):
+        return self.collection.find()
+
 post_repository = PostRepository()
