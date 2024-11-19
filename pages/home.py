@@ -25,6 +25,8 @@ class HomePage(Page):
         with open("css/grid.css") as file:
             css = file.read()
 
+        st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
         divs = [
             f"""
             <div class="mansory_item">
@@ -37,21 +39,12 @@ class HomePage(Page):
         ]
 
         html = """
-            <html>
-                <base target="_blank" />
-                <head>
-                    <style> %s </style>
-                </head>
-                <body>
-                    <div class="mansory">
-                    %s
-                    </div>
-                </body>
-            </html>
+            <div class="mansory">
+            %s
+            </div>
         """ % (
-            css,
             ''.join(divs),
         )
 
-        st.components.v1.html(html, height=2400, scrolling=True)
+        st.html(html)
 
