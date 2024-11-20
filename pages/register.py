@@ -28,7 +28,7 @@ class RegisterPage(Page):
         password = st.text_input("Mật khẩu", type="password")
         password_confirmation = st.text_input("Nhập lại mật khẩu", type="password")
 
-        left, right = st.columns(2, vertical_alignment="center")
+        left, right = st.columns([0.1, 1.5], vertical_alignment="center")
         if left.button("Đăng ký"):
             self.register(username, password, password_confirmation)
         right.page_link("pages/login.py", label="Đã có tải khoản?")

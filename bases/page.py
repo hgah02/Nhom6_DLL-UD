@@ -12,16 +12,21 @@ class Page(ABC):
     def view(self):
         pass
 
-    def set_authentication_info(self, username):
-        self.cookie["auth_info"] = username
+    def set_authentication_info(self, user_id, username):
+        self.cookie["logged_username"] = username
+        self.cookie["logged_id"] = user_id
         self.cookie.save()
 
     def remove_authentication_info(self):
-        self.cookie["auth_info"] = ''
+        self.cookie["logged_username"] = ''
+        self.cookie["logged_id"] = ''
         self.cookie.save()
 
-    def get_auth(self):
-        return self.cookie.get('auth_info')
+    def get_auth_username(self):
+        return self.cookie.get('logged_username')
+
+    def get_auth_id(self):
+        return self.cookie.get('logged_id')
 
     def init(self):
         self.view()

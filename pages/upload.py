@@ -25,14 +25,14 @@ class UploadPage(Page):
 
         image_path = self.store_image(image)
 
-        user = user_repository.find_by_username(self.get_auth())
+        user = user_repository.find_by_username(self.get_auth_username())
 
         post_repository.create_post(title, content, keywords, is_public, image_path, user["_id"])
 
         st.success("Đăng ảnh thành công.")
 
     def view(self):
-        if (self.get_auth() == None):
+        if (self.get_auth_username() == None):
             st.error("Vui lòng đăng nhập để tiếp tục.")
             st.stop
 

@@ -14,7 +14,7 @@ class LoginPage(Page):
             st.error("Sai tên người dùng hoặc mật khẩu.")
             return
 
-        self.set_authentication_info(username)
+        self.set_authentication_info(str(user["_id"]), username)
 
         st.switch_page("app.py")
         st.rerun()
@@ -24,7 +24,7 @@ class LoginPage(Page):
         username = st.text_input("Tên người dùng")
         password = st.text_input("Mật khẩu", type="password")
 
-        left, right = st.columns(2, vertical_alignment="center")
+        left, right = st.columns([0.1, 1.5], vertical_alignment="center")
         if left.button("Đăng nhập"):
             self.login(username, password)
         right.page_link("pages/register.py", label="Chưa có tải khoản?")

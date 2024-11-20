@@ -1,3 +1,5 @@
 
 [server]
 enableStaticServing = true
+fileWatcherType = "auto"
+runOnSave = true
