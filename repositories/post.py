@@ -1,4 +1,5 @@
 from bases.repository import Repository
+import math
 
 class PostRepository(Repository):
     def __init__(self):
@@ -29,21 +30,22 @@ class PostRepository(Repository):
         )
         return True
 
-    def find_all(self, search=None):
-        match_stage = [{"$match": {"is_public": True}}]
+    def find_all(self, search=None, page=1, limit=1, ):
+        match_filter = {"is_public": True}
 
         if search:
-            match_stage.append({
-            "$match": {
-                "$or": [
-                    {"title": {"$regex": search, "$options": "i"}},
-                    {"content": {"$regex": search, "$options": "i"}},
-                    {"keywords": {"$in": [search]}}
-                ]}
-            })
+            match_filter["$or"] = [
+                {"title": {"$regex": search, "$options": "i"}},
+                {"content": {"$regex": search, "$options": "i"}},
+                {"keywords": {"$in": [search]}}
+            ]
 
-        return list(self.collection.aggregate([
-            *match_stage,
+        total_count = self.collection.count_documents(match_filter)
+
+        skip = (page - 1) * limit
+
+        pipeline = [
+            {"$match": match_filter},
             {
                 "$lookup": {
                     "from": "users",
@@ -57,7 +59,17 @@ class PostRepository(Repository):
                     "path": "$user",
                     "preserveNullAndEmptyArrays": True
                 }
-            }
-        ]))
+            },
+            {"$skip": skip},
+            {"$limit": limit}
+        ]
+
+        result = list(self.collection.aggregate(pipeline))
+
+        return {
+            "items": result,
+            "total_pages": math.ceil(total_count / limit),
+            "current_page": page,
+        }
 
 post_repository = PostRepository()
