@@ -30,7 +30,7 @@ class PostRepository(Repository):
         )
         return True
 
-    def find_all(self, search=None, page=1, limit=1, ):
+    def find_all(self, search=None, page=1, limit=20):
         match_filter = {"is_public": True}
 
         if search:
