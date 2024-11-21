@@ -17,9 +17,12 @@ class HomePage(Page):
         if "posts" not in st.session_state:
             self.fetch_data(keyword=None, page=1)
 
-        search = st.text_input("Tìm kiếm:")
-        if (st.button("Tìm kiếm")):
-            self.fetch_data(search, 1)
+        [_,_,_,search_input,search_btn] = st.columns([1,1,1,1,0.275], vertical_alignment='bottom')
+        with search_input:
+            search = st.text_input("Tìm kiếm")
+        with search_btn:
+            if (st.button("Tìm kiếm")):
+                self.fetch_data(search, 1)
 
         max_columns = 4
         grid_columns = st.columns(max_columns)
@@ -37,8 +40,8 @@ class HomePage(Page):
                 with like_button:
                    if self.get_auth_id():
                         is_liked = self.get_auth_id() in post["likes"]
-                        button_label = "👎 Bỏ thích" if is_liked else "👍"
-                        if st.button(button_label, key=f"like_{post['_id']}"):
+                        button_label = "💓" if is_liked else "🖤"
+                        if st.button(f"{len(post["likes"])} {button_label}", key=f"like_{post['_id']}", ):
                             post_repository.like_post(post["_id"], self.get_auth_id())
                             self.fetch_data(keyword=st.session_state.search, page=st.session_state.current_page)
                             st.rerun()
@@ -71,18 +74,24 @@ class HomePage(Page):
                     st.rerun()
 
     def view_header(self):
+        [_, header_btn_left, header_btn_right] = st.columns([12, 0.9, 1])
+
         if self.get_auth_id():
             st.title(f"Chào mừng {self.get_auth_username()}!")
             st.write("Bạn đã đăng nhập thành công.")
-            if st.button("Đăng xuất"):
-                self.remove_authentication_info()
-                st.rerun()
-            if st.button("Đăng ảnh"):
-                st.switch_page("pages/upload.py")
+            with header_btn_left:
+                if st.button("Đăng ảnh"):
+                    st.switch_page("pages/upload.py")
+            with header_btn_right:
+                if st.button("Đăng xuất"):
+                    self.remove_authentication_info()
+                    st.rerun()
         else:
             st.title("Trang chủ")
-            if st.button("Đăng ký"):
-                st.switch_page("pages/register.py")
-            if st.button("Đăng nhập"):
-                st.switch_page("pages/login.py")
+            with header_btn_left:
+                if st.button("Đăng ký"):
+                    st.switch_page("pages/register.py")
+            with header_btn_right:
+                if st.button("Đăng nhập"):
+                    st.switch_page("pages/login.py")
 

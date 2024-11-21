@@ -44,7 +44,7 @@ class UploadPage(Page):
             text='Nhập tags',
             maxtags = 10,
             key='keyword_tags')
-        is_public = st.checkbox("Công khai")
+        is_public = st.checkbox("Công khai", value=True)
         image = st.file_uploader("Chọn ảnh", accept_multiple_files=False, type=['png', 'jpg', 'jpeg'])
 
         if st.button("Đăng"):
