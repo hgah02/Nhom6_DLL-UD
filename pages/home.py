@@ -39,10 +39,8 @@ class HomePage(Page):
                         is_liked = self.get_auth_id() in post["likes"]
                         button_label = "👎 Bỏ thích" if is_liked else "👍"
                         if st.button(button_label, key=f"like_{post['_id']}"):
-                            if "liked_posts" not in st.session_state:
-                                st.session_state.liked_posts = {}
-                            liked = post_repository.like_post(post["_id"], self.get_auth_id())
-                            st.session_state.liked_posts[post["_id"]] = liked
+                            post_repository.like_post(post["_id"], self.get_auth_id())
+                            self.fetch_data(keyword=st.session_state.search, page=st.session_state.current_page)
                             st.rerun()
 
                 with download_button:
