@@ -13,7 +13,8 @@ class LoginPage(Page):
             return
 
         user = user_repository.find_by_username(username)
-        if not user or checkpw(password.encode(), user["password"]):
+        print("userLoggedIn", user)
+        if not user or not checkpw(password.encode(), user["password"]):
             st.error("Sai tên người dùng hoặc mật khẩu.")
             return
 
