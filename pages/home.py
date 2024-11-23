@@ -55,11 +55,11 @@ class HomePage(Page):
 
                 [_, download_button, like_button] = st.columns([10, 2, 3])
                 with like_button:
-                        is_liked = self.get_auth_id() in post["likes"]
+                        is_liked = Page.get_auth_id() in post["likes"]
                         button_label = "💓" if is_liked else "🖤"
                         if st.button(f"{len(post["likes"])} {button_label}", key=f"like_{post['_id']}", ):
-                            if self.get_auth_id():
-                                post_repository.like_post(post["_id"], self.get_auth_id())
+                            if Page.get_auth_id():
+                                post_repository.like_post(post["_id"], Page.get_auth_id())
                                 self.fetch_data(keyword=st.session_state.search, page=st.session_state.current_page)
                                 st.rerun()
                             else:

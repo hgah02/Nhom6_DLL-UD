@@ -44,9 +44,9 @@ class Page(ABC):
                 menu_icon="cast",key='header_menu', default_index=0, orientation="horizontal")
 
         with (header_right):
-            if self.get_auth_id():
+            if Page.get_auth_id():
                 if st.button("Đăng xuất"):
-                    self.remove_authentication_info()
+                    Page.remove_authentication_info()
                     st.rerun()
             else:
                 if st.button("Đăng nhập"):

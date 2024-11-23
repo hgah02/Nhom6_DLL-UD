@@ -40,6 +40,10 @@ class MyPage(Page):
             st.rerun()
 
     def view(self):
+        if (not Page.get_auth_id()):
+            st.error("Vui lòng đăng nhập để tiếp tục.")
+            return
+
         if "my_post" not in st.session_state:
             self.fetch_data(keyword=None, page=1)
 

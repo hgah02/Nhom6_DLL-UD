@@ -10,16 +10,8 @@ def get_page(header_menu):
     if header_menu == "Trang chủ":
         return HomePage()
     elif header_menu == "Đăng ảnh":
-        if not Page.get_auth_id():
-            st.session_state["header_menu"] = "Trang chủ"
-            st.toast("Vui lòng đăng nhập để tiếp tục.")
-            return HomePage()
         return UploadPage()
     elif header_menu == "Ảnh của tôi":
-        if not Page.get_auth_id():
-            st.session_state["header_menu"] = "Trang chủ"
-            st.toast("Vui lòng đăng nhập để tiếp tục.")
-            return HomePage()
         return MyPage()
     return HomePage()
 

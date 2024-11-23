@@ -17,7 +17,7 @@ class LoginPage(Page):
             st.error("Sai tên người dùng hoặc mật khẩu.")
             return
 
-        self.set_authentication_info(str(user["_id"]), username)
+        Page.set_authentication_info(str(user["_id"]), username)
 
         st.switch_page("app.py")
         st.rerun()
