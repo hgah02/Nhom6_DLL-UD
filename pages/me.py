@@ -1,38 +1,58 @@
 import streamlit as st
 from bases.page import Page
-from repositories.post import post_repository
 import os
+from streamlit_tags import st_tags
+import uuid
+from repositories.post import post_repository
+from repositories.user import user_repository
 
-class HomePage(Page):
+class MyPage(Page):
     def fetch_data(self, keyword = None, page = 1):
-        posts = post_repository.find_all(keyword, page)
-        st.session_state.search = keyword
-        st.session_state.posts = posts["items"]
-        st.session_state.total_pages = posts["total_pages"]
-        st.session_state.current_page = posts["current_page"]
+        my_post = post_repository.find_all(None, page, 20, Page.get_auth_id())
+        print(my_post)
+        st.session_state.my_post = my_post["items"]
+        st.session_state.total_pages = my_post["total_pages"]
+        st.session_state.current_page = my_post["current_page"]
+
+    @st.dialog("Bạn muốn xóa ảnh này?")
+    def confirm_delete_dialog(self, id):
+        if st.button("Xác nhận"):
+            post_repository.delete_post(id)
+            self.fetch_data(keyword=st.session_state.search, page=st.session_state.current_page)
+            st.toast("Xóa ảnh thành công.")
+            st.rerun()
+
+    @st.dialog("Sửa thông tin")
+    def update_dialog(self, post):
+        title = st.text_input("Tiêu đề", value=post["title"])
+        content = st.text_input("Nội dung", value=post["content"])
+        keywords = st_tags(
+            label='Tag:',
+            text='Nhập tags',
+            maxtags = 10,
+            value=post["keywords"],
+            key='keyword_tags')
+        is_public = st.checkbox("Công khai", value=post["is_public"])
+        if (st.button("Cập nhật")):
+            post_repository.update_post(post["_id"], title, content, keywords, is_public)
+            self.fetch_data(keyword=st.session_state.search, page=st.session_state.current_page)
+            st.toast("Cập nhật ảnh thành công.")
+            st.rerun()
 
     def view(self):
-        if "posts" not in st.session_state:
+        if "my_post" not in st.session_state:
             self.fetch_data(keyword=None, page=1)
-
-        [_,_,_,search_input,search_btn] = st.columns([1,1,1,1,0.275], vertical_alignment='bottom')
-        with search_input:
-            search = st.text_input("Tìm kiếm")
-        with search_btn:
-            if (st.button("Tìm kiếm")):
-                self.fetch_data(search, 1)
 
         max_columns = 4
         grid_columns = st.columns(max_columns)
 
-        posts = st.session_state.posts
-        for index, post in enumerate(posts):
+        my_post = st.session_state.my_post
+        for index, post in enumerate(my_post):
             with grid_columns[index % max_columns]:
                 st.image(os.path.abspath(post['image_path']), use_container_width=True)
 
                 st.write(f"**{post['title']}**")
                 st.write(post["content"])
-                st.write(f"*Đăng bởi: {post['user']['username']}*")
 
                 st.markdown("""
                     <style>
@@ -53,18 +73,9 @@ class HomePage(Page):
 
                 st.markdown(tags_html, unsafe_allow_html=True)
 
-                [_, download_button, like_button] = st.columns([10, 2, 3])
+                [download_button, like_button, delete_button, edit_button] = st.columns([1,1,1,1])
                 with like_button:
-                        is_liked = self.get_auth_id() in post["likes"]
-                        button_label = "💓" if is_liked else "🖤"
-                        if st.button(f"{len(post["likes"])} {button_label}", key=f"like_{post['_id']}", ):
-                            if self.get_auth_id():
-                                post_repository.like_post(post["_id"], self.get_auth_id())
-                                self.fetch_data(keyword=st.session_state.search, page=st.session_state.current_page)
-                                st.rerun()
-                            else:
-                                st.toast('Đăng nhập để thích bài viết')
-
+                    st.button(f"{len(post["likes"])} 💓", key=f"like_{post['_id']}", )
                 with download_button:
                     with open(os.path.abspath(post['image_path']), "rb") as file:
                         st.download_button(
@@ -74,6 +85,13 @@ class HomePage(Page):
                             mime="image/jpeg",
                             key=f"download_{post['_id']}"
                         )
+                with delete_button:
+                    if st.button("Xóa", key=f"delete_{post['_id']}"):
+                        self.confirm_delete_dialog(post['_id'])
+                with edit_button:
+                    if st.button("Sửa", key=f"edit_{post['_id']}"):
+                        self.update_dialog(post)
+
                 st.divider()
 
         _, _, previous_col, page_info_col, next_col, _, _ = st.columns([1, 3, 2, 2, 2, 3, 1], vertical_alignment="center")

@@ -1,5 +1,6 @@
 from bases.repository import Repository
 import math
+from bson import ObjectId
 
 class PostRepository(Repository):
     def __init__(self):
@@ -30,8 +31,13 @@ class PostRepository(Repository):
         )
         return True
 
-    def find_all(self, search=None, page=1, limit=20):
-        match_filter = {"is_public": True}
+    def find_all(self, search=None, page=1, limit=20, user_id=None):
+        match_filter = {}
+
+        if user_id:
+            match_filter["user_id"] = ObjectId(user_id)
+        else :
+            match_filter["is_public"] = True
 
         if search:
             match_filter["$or"] = [
@@ -72,4 +78,17 @@ class PostRepository(Repository):
             "current_page": page,
         }
 
+    def delete_post(self, post_id):
+        return self.collection.delete_one({"_id": post_id})
+
+    def update_post(self, post_id, title, content, keywords, is_public):
+        return self.collection.update_one(
+            {"_id": post_id},
+            {"$set": {
+                "title": title,
+                "content": content,
+                "keywords": keywords,
+                "is_public": is_public
+            }}
+        )
 post_repository = PostRepository()

@@ -49,6 +49,3 @@ class UploadPage(Page):
 
         if st.button("Đăng"):
             self.upload(title, content, keywords, is_public, image)
-
-page = UploadPage()
-page.init()
